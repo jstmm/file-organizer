@@ -1,25 +1,35 @@
-# Compiler
+# Compiler and flags
 CXX = g++
-
-# Compiler flags
 CXXFLAGS = -std=c++20 -Wall -Wextra -O2 -g
 
-# Target executable
-TARGET = file_organizer
+# Directories
+SRC_DIR = .
+BUILD_DIR = build
 
 # Source files
-SRCS = main.cpp
+SRC_FILES = $(SRC_DIR)/main.cpp
 
-# Default target
+# Output binary
+TARGET = $(BUILD_DIR)/file_organizer
+
+# Default target to build the project
 all: $(TARGET)
 
-# Compile source files directly into the executable
-$(TARGET): $(SRCS)
-	$(CXX) $(CXXFLAGS) $< -o $@
+# Rule to create the build directory
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
 
-# Clean up the executable
+# Rule to compile and link directly to the target binary, no object files
+$(TARGET): $(SRC_FILES) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC_FILES)
+
+# Rule to compile .cpp to .o
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean up build files
 clean:
-	rm -f $(TARGET)
+	rm -rf $(BUILD_DIR)
 	mkdir -p test_directory
 	rm -rf test_directory/**
 	touch test_directory/image.jpg
@@ -28,5 +38,5 @@ clean:
 	touch test_directory/music.mp3
 	touch test_directory/archive.zip
 
-# Phony targets
+# Phony targets (not actual files)
 .PHONY: all clean
